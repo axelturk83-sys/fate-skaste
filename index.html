@@ -60,6 +60,13 @@ h2::after{content:"";display:block;width:52px;height:5px;background:var(--sun);b
 .info dt{font-weight:600;color:var(--sun)}
 .info dd{margin:0 0 10px}
 .info a{color:var(--text)}
+.stores{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 6px}
+.stores button{font:700 18px "Fira Sans Extra Condensed",sans-serif;text-transform:uppercase;padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:rgba(16,12,10,.6);color:var(--ink);cursor:pointer}
+.stores button[aria-pressed="true"]{background:linear-gradient(90deg,#ee7a35,#f5a93a);border-color:transparent;color:#100c0a}
+.scard{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+.scard h3{font-size:1.6rem;color:var(--sun);margin-bottom:8px}
+.scard div{margin:2px 0}
+.scard .btns{margin-top:12px}
 footer{padding:28px 0 40px;color:var(--muted);font-size:.95rem}
 </style>
 </head>
@@ -70,12 +77,13 @@ footer{padding:28px 0 40px;color:var(--muted);font-size:.95rem}
     <h1>Φάτε<span>Σκάστε</span></h1>
     <p class="sub">Σούβλες, γύρος και ψητά στα κάρβουνα, ζεστά και στην ώρα τους.</p>
   </div>
-  <p class="open">Ανοιχτά κάθε μέρα 12:00–02:00</p>
-  <div class="btns"><span id="deliv" style="display:contents"></span><a class="btn" href="https://maps.app.goo.gl/PDtfgp7wXbnGHAA89" rel="noopener">Δες τον χάρτη</a></div>
+  <div class="stores" id="stores"></div><p class="open">Ανοιχτά κάθε μέρα 12:00–02:00</p>
+  <div class="btns"><span id="deliv" style="display:contents"></span><a class="btn" id="maplink" href="https://maps.app.goo.gl/PDtfgp7wXbnGHAA89" rel="noopener">Δες τον χάρτη</a></div>
 </div></header>
 <main class="in">
   <section id="menu">
     <h2>Μενού</h2>
+    <div id="forstore" class="who" style="margin:-8px 0 12px"></div>
     <div class="tabs" role="tablist" id="tabs"></div>
     <div id="items" role="tabpanel"></div>
   </section>
@@ -85,12 +93,8 @@ footer{padding:28px 0 40px;color:var(--muted);font-size:.95rem}
   </section>
   <section id="contact">
     <h2>Επικοινωνία</h2>
-    <dl class="info">
-      <dt>Διεύθυνση</dt><dd>Λεωφ. Βασιλέως Γεωργίου 24, Θεσσαλονίκη 546 40</dd>
-      <dt>Τηλέφωνο</dt><dd><a href="tel:+302310869154">2310 869154</a></dd>
-      <dt>Ώρες λειτουργίας</dt><dd>Κάθε μέρα 12:00–02:00</dd>
-    </dl>
-    <div class="btns" style="margin-top:16px"><a class="btn" href="https://www.instagram.com/fate_skaste" rel="noopener">Instagram</a><a class="btn" href="https://www.facebook.com/share/1QPzn2JJLg/" rel="noopener">Facebook</a><a class="btn" href="https://www.tiktok.com/@fate_skaste" rel="noopener">TikTok</a></div>
+    <div id="storecards"></div>
+    <div class="btns" style="margin-top:16px"><a class="btn" href="https://www.instagram.com/fate_skaste" rel="noopener">Instagram</a><a class="btn" href="https://www.tiktok.com/@fate_skaste" rel="noopener">TikTok</a></div>
   </section>
   <footer>© Φάτε Σκάστε. Οι τιμές περιλαμβάνουν ΦΠΑ.</footer>
 </main>
@@ -107,11 +111,11 @@ var MENU={
 "Χορτοφαγικά":[["Πατατόπιτα",[["Σάντουιτς","3,40 €"]]],["Μπιφτέκι λαχανικών",[["Σάντουιτς","4,50 €"],["Μερίδα","8,00 €"],["Τεμάχιο","3,00 €"]]],["Σουβλάκι μανιτάρι-χαλούμι",[["Σάντουιτς","4,50 €"],["Μερίδα 3 τεμ.","8,00 €"],["Τεμάχιο","2,40 €"]]],["Φαλάφελ",[["Σάντουιτς","4,50 €"],["Μερίδα","8,00 €"]]]],
 "Σπέσιαλ":[["Αραβική κοντοσούβλι",A,"χοιρινό ή κοτόπουλο"],["Αραβική mix σούβλας",A],["Αραβική γύρος",A],["Αραβική σουβλάκι",A,"2 τεμάχια"],["Club κοντοσούβλι",C,"χοιρινό ή κοτόπουλο"],["Club mix σούβλας",C],["Club γύρος",C],["Αραβική με σως γιαουρτιού, Club με σως μουστάρδας. Γαρνίρονται με μαρούλι, αγγούρι, ντομάτα, κρεμμύδι και συνοδεύονται με πατάτες.",[]]],
 "Σαλάτες":[["Αγγουροντομάτα",S("5,20")],["Μαρούλι",S("5,00")],["Caesar’s",S("7,20")],["Χωριάτικη",S("7,30")],["Λάχανο-Καρότο",S("5,00")]],
-"Ορεκτικά":[["Φρέσκιες πατάτες τηγανητές",S("3,80")],["Φρέσκιες πατάτες με κεφαλοτύρι",S("4,30")],["Φέτα",S("4,80")],["Φέτα ψητή",S("4,10")],["Χαλούμι σχάρας",S("5,80")]],
+"Ορεκτικά":[["Φρέσκιες πατάτες τηγανητές",S("3,80")],["Φρέσκιες πατάτες με κεφαλοτύρι",S("4,30")],["Φέτα",S("4,80")],["Φέτα ψητή",S("4,10")],["Χαλούμι σχάρας",S("5,80")],["Καυτερή πιπεριά",S("1,60")]],
 "Αλοιφές":[["Τυροσαλάτα",M],["Ρώσικη",M],["Τζατζίκι",M],["Μελιτζανοσαλάτα",M],["Πάπρικα",M],["Ουγγαρέζα",M],["Σως γιαουρτιού",M],["Σως μουστάρδα",M],["Σωσάκι",M]],
-"Extra":[["Κυπριακή πίτα",S("0,80")],["Επιπλέον αλοιφή",S("0,40")],["Κεφαλοτύρι",S("0,30")],["Μαρούλι",S("0,30")],["Λάχανο-Καρότο",S("0,30")]],
+"Extra":[["Κυπριακή πίτα",S("0,80")],["Πίτα",S("0,60")],["Επιπλέον αλοιφή",S("0,40")],["Κεφαλοτύρι",S("0,30")],["Μαρούλι",S("0,30")],["Λάχανο-Καρότο",S("0,30")]],
 "Αναψυκτικά":[["Pepsi Max",B],["Pepsi",B],["ΗΒΗ Πορτοκαλάδα",S("1,90")],["ΗΒΗ Λεμονάδα",S("1,90")],["ΗΒΗ Σόδα",S("1,90")],["Νερό",[["500ml","0,50 €"]]]],
-"Ποτά":[["Άλφα",[["330ml","2,10 €"]]],["Fix",[["330ml","2,10 €"]]],["Βασιλική ρετσίνα",[["500ml","4,50 €"]]]]
+"Ποτά":[["Άλφα",[["330ml","2,10 €"],["500ml","3,50 €"]]],["Kaiser",[["330ml","2,10 €"],["500ml","4,00 €"]]],["Fix",[["330ml","2,10 €"],["500ml","3,50 €"]]],["Βασιλική ρετσίνα",[["500ml","4,50 €"]]]]
 };
 var IC={"Σούβλες":"🍢","Ψητά":"🔥","Χορτοφαγικά":"🌱","Σπέσιαλ":"🥙","Σαλάτες":"🥗","Ορεκτικά":"🍟","Αλοιφές":"🥣","Extra":"➕","Αναψυκτικά":"🥤","Ποτά":"🍺"};
 var cats=Object.keys(MENU),tabs=document.getElementById("tabs"),items=document.getElementById("items");
@@ -126,7 +130,7 @@ var cur=cats[0];function show(c){cur=c;
     if(i[1].length){
       var dots=document.createElement("span");dots.className="dots";
       var p=document.createElement("span");p.className="p";
-      i[1].forEach(function(r){var w=document.createElement("div");if(r[0]){var l=document.createElement("small");l.style.cssText="display:inline;font-weight:400;color:var(--muted);font-family:'Fira Sans',sans-serif;margin-right:6px";l.textContent=T(r[0]);w.appendChild(l)}w.appendChild(document.createTextNode(TP(r[1])));p.appendChild(w)});
+      i[1].forEach(function(r){var w=document.createElement("div");if(r[0]){var l=document.createElement("small");l.style.cssText="display:inline;font-weight:400;color:var(--muted);font-family:'Fira Sans',sans-serif;margin-right:6px";l.textContent=T(r[0]);w.appendChild(l)}w.appendChild(document.createTextNode(TP(PR(i[0],r))));p.appendChild(w)});
       d.append(dots,p);
     }
     items.appendChild(d);
@@ -134,8 +138,43 @@ var cur=cats[0];function show(c){cur=c;
 }
 cats.forEach(function(c){var b=document.createElement("button");b.type="button";b.setAttribute("role","tab");b.dataset.c=c;b.textContent=IC[c]+" "+c;b.onclick=function(){show(c)};tabs.appendChild(b)});
 show(cats[0]);
-var DELIV=[["Παράγγειλε στο efood","https://e-food.gr/delivery/thessaloniki-agia-triada/fate-skaste"],["Παράγγειλε στο Wolt",""]];
-DELIV.forEach(function(x){if(!x[1])return;var a=document.createElement("a");a.className="btn sun";a.href=x[1];a.rel="noopener";a.textContent=x[0];document.getElementById("deliv").appendChild(a)});
+var STORES={
+ vas:{name:"Βασιλέως Γεωργίου",addr:"Λεωφ. Βασιλέως Γεωργίου 24, Θεσσαλονίκη 546 40",tel:"2310 869154",hours:"12:00–02:00",map:"https://maps.app.goo.gl/PDtfgp7wXbnGHAA89",efood:"https://e-food.gr/delivery/thessaloniki-agia-triada/fate-skaste",fb:"https://www.facebook.com/share/1QPzn2JJLg/"},
+ lad:{name:"Λαδάδικα",addr:"Πολυτεχνείου 51, Θεσσαλονίκη 546 25",tel:"2310 522733",hours:"",sched:[["Δευτέρα–Τετάρτη","12:00–01:00"],["Πέμπτη","12:00–04:00"],["Παρασκευή–Κυριακή","Από 12:00 της Παρασκευής έως 04:00 της Κυριακής (συνεχόμενα)"]],map:"https://maps.app.goo.gl/hMPJvwK7UvpB29258",efood:"https://e-food.gr/delivery/thessaloniki/fate-skaste-ladadika-7156876",fb:"https://www.facebook.com/share/1DmR9HvvP7/"}
+};
+// Διαφορές τιμών ανά κατάστημα. Μορφή: "Όνομα προϊόντος|Τίτλος τιμής":"νέα τιμή"
+var PRICES={vas:{},lad:{
+"Πατατόπιτα|Σάντουιτς":"4,00 €",
+"Μπιφτέκι λαχανικών|Μερίδα":"8,30 €",
+"Σουβλάκι μανιτάρι-χαλούμι|Μερίδα 3 τεμ.":"8,30 €",
+"Φαλάφελ|Μερίδα":"8,30 €",
+"Φέτα ψητή|":"4,80 €",
+"Χαλούμι σχάρας|":"5,90 €",
+"Σωσάκι|Μερίδα":"0,70 €",
+"Κεφαλοτύρι|":"0,40 €",
+"Βασιλική ρετσίνα|500ml":"5,00 €"}};
+var STORE=(location.hash||"").slice(1);
+if(!STORES[STORE]){try{STORE=localStorage.getItem("store")}catch(e){}}
+if(!STORES[STORE])STORE="vas";
+function PR(n,r){var o=PRICES&&PRICES[STORE]?PRICES[STORE][n+"|"+r[0]]:0;return o||r[1]}
+function mk(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
+function lnk(h,t,c){var a=mk("a",c||"btn",t);a.href=h;a.rel="noopener";return a}
+function applyStore(){
+  var S=STORES[STORE],st=document.getElementById("stores");st.innerHTML="";
+  Object.keys(STORES).forEach(function(k){var b=mk("button","",T(STORES[k].name));b.type="button";b.setAttribute("aria-pressed",k===STORE);b.onclick=function(){STORE=k;try{localStorage.setItem("store",k)}catch(e){}apply()};st.appendChild(b)});
+  var o=document.querySelector(".open");o.style.display=S.hours?"":"none";if(S.hours){o.textContent="Ανοιχτά κάθε μέρα "+S.hours;o.dataset.g=o.textContent}
+  document.getElementById("maplink").href=S.map;
+  var dv=document.getElementById("deliv");dv.innerHTML="";dv.appendChild(lnk(S.efood,"Παράγγειλε στο efood","btn sun"));
+  document.getElementById("forstore").textContent=T("Τιμές καταστήματος")+": "+T(S.name);
+  var sc=document.getElementById("storecards");sc.innerHTML="";
+  Object.keys(STORES).forEach(function(k){var s=STORES[k],c=mk("div","scard");
+    c.appendChild(mk("h3","",T(s.name)));c.appendChild(mk("div","",T(s.addr)));
+    if(s.tel){var d=mk("div"),a=mk("a","",s.tel);a.href="tel:+30"+s.tel.replace(/\s/g,"");a.style.color="var(--text)";d.appendChild(a);c.appendChild(d)}
+    if(s.hours)c.appendChild(mk("div","",(LANG==="en"?"Every day ":"Κάθε μέρα ")+s.hours));
+    if(s.sched)s.sched.forEach(function(r){c.appendChild(mk("div","",T(r[0])+": "+T(r[1])))});
+    var b=mk("div","btns");b.append(lnk(s.map,"Δες τον χάρτη"),lnk(s.efood,"Παράγγειλε στο efood"),lnk(s.fb,"Facebook"));c.appendChild(b);sc.appendChild(c)});
+}
+
 // Κριτικές που έχει εγκρίνει ο ιδιοκτήτης. Μορφή: {n:"Όνομα",r:5,t:"Κείμενο"}
 var REVS=[];
 var list=document.getElementById("list");
@@ -153,7 +192,7 @@ if(!REVS.length){
     d.append(s,q,w);list.appendChild(d);
   });
 }
-var EN={"Σούβλες":"Skewers","Ψητά":"Grill","Χορτοφαγικά":"Vegetarian","Σπέσιαλ":"Specials","Σαλάτες":"Salads","Ορεκτικά":"Starters","Αλοιφές":"Dips","Extra":"Extras","Αναψυκτικά":"Soft drinks","Ποτά":"Drinks",
+var EN={"Σούβλες":"Skewers","Ψητά":"Grill","Χορτοφαγικά":"Vegetarian","Σπέσιαλ":"Specials","Σαλάτες":"Salads","Ορεκτικά":"Starters","Αλοιφές":"Dips","Βασιλέως Γεωργίου":"Vasileos Georgiou","Λαδάδικα":"Ladadika","Τιμές καταστήματος":"Store prices","Πολυτεχνείου 51, Θεσσαλονίκη 546 25":"51 Polytechniou St, Thessaloniki 546 25","Δευτέρα–Τετάρτη":"Monday–Wednesday","Πέμπτη":"Thursday","Παρασκευή–Κυριακή":"Friday–Sunday","Από 12:00 της Παρασκευής έως 04:00 της Κυριακής (συνεχόμενα)":"From Friday 12:00 to Sunday 04:00 (non-stop)","Extra":"Extras","Αναψυκτικά":"Soft drinks","Ποτά":"Drinks",
 "Σάντουιτς":"Sandwich","Μερίδα 280γρ.":"Portion 280g","Μισή μερίδα 150γρ.":"Half portion 150g","Μερίδα 3 τεμ.":"Portion, 3 pcs","Μερίδα 4 τεμ.":"Portion, 4 pcs","Τεμάχιο":"Piece","Μερίδα":"Portion","500γρ.":"500g","1 κιλό":"1 kg",
 "Κοντοσούβλι χοιρινό":"Pork kontosouvli","Κοντοσούβλι κοτόπουλο":"Chicken kontosouvli","μπούτι":"thigh","Ελλασονίτικο":"Elassonitiko","Μπριζόλα σούβλας":"Pork chop skewer","Γύρος":"Gyros","Για την παρέα: κοντοσούβλι χοιρινό ή κοτόπουλο":"For sharing: pork or chicken kontosouvli",
 "Σουβλάκι χοιρινό":"Pork souvlaki","Σουβλάκι κοτόπουλο":"Chicken souvlaki","στήθος":"breast","Πανσέτα":"Pork belly","Κεφτεδάκι σχάρας μοσχαρίσιο":"Grilled beef meatball","Σουτζουκάκι":"Soutzoukaki","Διπλό τεμάχιο στα σάντουιτς":"Double piece in sandwiches",
@@ -161,9 +200,9 @@ var EN={"Σούβλες":"Skewers","Ψητά":"Grill","Χορτοφαγικά":"
 "Αραβική κοντοσούβλι":"Arabic pita kontosouvli","χοιρινό ή κοτόπουλο":"pork or chicken","Αραβική mix σούβλας":"Arabic pita mixed grill","Αραβική γύρος":"Arabic pita gyros","Αραβική σουβλάκι":"Arabic pita souvlaki","2 τεμάχια":"2 pieces","Club κοντοσούβλι":"Club kontosouvli","Club mix σούβλας":"Club mixed grill","Club γύρος":"Club gyros",
 "Αραβική με σως γιαουρτιού, Club με σως μουστάρδας. Γαρνίρονται με μαρούλι, αγγούρι, ντομάτα, κρεμμύδι και συνοδεύονται με πατάτες.":"Arabic pita comes with yogurt sauce, Club with mustard sauce. Garnished with lettuce, cucumber, tomato and onion, served with fries.",
 "Αγγουροντομάτα":"Cucumber & tomato","Μαρούλι":"Lettuce","Χωριάτικη":"Greek salad","Λάχανο-Καρότο":"Cabbage & carrot",
-"Φρέσκιες πατάτες τηγανητές":"Fresh fries","Φρέσκιες πατάτες με κεφαλοτύρι":"Fresh fries with kefalotyri","Φέτα":"Feta","Φέτα ψητή":"Grilled feta","Χαλούμι σχάρας":"Grilled halloumi",
+"Φρέσκιες πατάτες τηγανητές":"Fresh fries","Φρέσκιες πατάτες με κεφαλοτύρι":"Fresh fries with kefalotyri","Φέτα":"Feta","Φέτα ψητή":"Grilled feta","Χαλούμι σχάρας":"Grilled halloumi","Καυτερή πιπεριά":"Hot pepper",
 "Τυροσαλάτα":"Spicy cheese dip","Ρώσικη":"Russian salad","Τζατζίκι":"Tzatziki","Μελιτζανοσαλάτα":"Aubergine dip","Πάπρικα":"Paprika dip","Ουγγαρέζα":"Hungarian dip","Σως γιαουρτιού":"Yogurt sauce","Σως μουστάρδα":"Mustard sauce","Σωσάκι":"Sosaki sauce",
-"Κυπριακή πίτα":"Cypriot pita","Επιπλέον αλοιφή":"Extra dip","Κεφαλοτύρι":"Kefalotyri cheese",
+"Πίτα":"Pita","Κυπριακή πίτα":"Cypriot pita","Επιπλέον αλοιφή":"Extra dip","Κεφαλοτύρι":"Kefalotyri cheese",
 "ΗΒΗ Πορτοκαλάδα":"IVI Orangeade","ΗΒΗ Λεμονάδα":"IVI Lemonade","ΗΒΗ Σόδα":"IVI Soda","Νερό":"Water","Άλφα":"Alfa","Βασιλική ρετσίνα":"Vasiliki retsina",
 "Ψητοπωλείο · Θεσσαλονίκη":"Grill house · Thessaloniki","Σούβλες, γύρος και ψητά στα κάρβουνα, ζεστά και στην ώρα τους.":"Skewers, gyros and charcoal grill, served hot and on time.","Ανοιχτά κάθε μέρα 12:00–02:00":"Open every day 12:00–02:00","Δες τον χάρτη":"See the map",
 "Μενού":"Menu","Κριτικές πελατών":"Customer reviews","Επικοινωνία":"Contact","Διεύθυνση":"Address","Τηλέφωνο":"Phone","Ώρες λειτουργίας":"Opening hours","Λεωφ. Βασιλέως Γεωργίου 24, Θεσσαλονίκη 546 40":"24 Vasileos Georgiou Ave, Thessaloniki 546 40","Κάθε μέρα 12:00–02:00":"Every day 12:00–02:00","© Φάτε Σκάστε. Οι τιμές περιλαμβάνουν ΦΠΑ.":"© Fate Skaste. Prices include VAT.",
@@ -173,7 +212,7 @@ try{LANG=localStorage.getItem("lang")||LANG}catch(e){}
 function T(s){return LANG==="en"&&EN[s]?EN[s]:s}
 function TP(s){return LANG==="en"?s.replace(",","."):s}
 function apply(){
-  document.documentElement.lang=LANG;
+  applyStore();document.documentElement.lang=LANG;
   document.title=LANG==="en"?"Fate Skaste – Grill house in Thessaloniki | Menu":"Φάτε Σκάστε – Ψητοπωλείο στη Θεσσαλονίκη | Μενού";
   document.querySelectorAll("p,h2,dt,dd,footer,a.btn").forEach(function(e){if(e.children.length)return;var g=e.dataset.g||(e.dataset.g=e.textContent);e.textContent=LANG==="en"&&EN[g]?EN[g]:g});
   [].forEach.call(tabs.children,function(b){b.textContent=IC[b.dataset.c]+" "+T(b.dataset.c)});
